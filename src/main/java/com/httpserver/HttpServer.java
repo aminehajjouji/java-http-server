@@ -2,13 +2,26 @@ package com.httpserver;
 
 import com.httpserver.config.Configuration;
 import com.httpserver.config.ConfigurationManager;
+import com.httpserver.core.ServerListnerThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 
 public class HttpServer {
+    private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
     public static void main(String[] args) {
-        System.out.println("Server Starting...");
+        LOGGER.info("Server Starting...");
         ConfigurationManager.getInstance().loadConfigurationFile("src/main/resources/http.json");
         Configuration configuration = ConfigurationManager.getInstance().gerCurrentConfiguration();
-        System.out.println("Server Started at port: " + configuration.getPort());
-        System.out.println("Webroot is at: " + configuration.getWebroot());
+        LOGGER.info("Server Started at port: " + configuration.getPort());
+        LOGGER.info("Webroot is at: " + configuration.getWebroot());
+        ServerListnerThread serverListnerThread = null;
+        try {
+            serverListnerThread = new ServerListnerThread(configuration.getPort(), configuration.getWebroot());
+            serverListnerThread.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
