@@ -1,5 +1,6 @@
 package com.httpserver.core;
 
+import com.http.HttpParser;
 import com.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ public class ServerListnerThread extends Thread {
             while(serverSocket.isBound() && !serverSocket.isClosed()){
                 Socket socket = serverSocket.accept();
                 LOGGER.info("Connection accepted from " + socket.getInetAddress());
-                HttpConnectionWorkerThread workerThread = new HttpConnectionWorkerThread(socket);
+                HttpConnectionWorkerThread workerThread = new HttpConnectionWorkerThread(socket, new HttpParser());
                 workerThread.run();
             }
 
