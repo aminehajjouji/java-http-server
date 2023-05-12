@@ -31,6 +31,9 @@ class HttpParserTest {
         assertNotNull(request);
         assertEquals(request.getMethod(), HttpMethod.GET);
         assertEquals(request.getRequestTarget(), "/index.html");
+        assertEquals(request.getOriginalHttpVersion(), "HTTP/1.1");
+        assertEquals(request.getCompatibleHttpVersion(), HttpVersion.HTTP_1_1);
+
     }
 
     @Test
@@ -69,6 +72,35 @@ class HttpParserTest {
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
+    }
+    @Test
+    void parseHttpBadHttpVersion() {
+        try {
+            HttpRequest request = httpParser.parseHttpRequest(generateBadHttpVersionTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            assertEquals(e.getErroCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
+    }
+    @Test
+    void parseHttpRequestUnsupportedVersion() {
+        try {
+            HttpRequest request = httpParser.parseHttpRequest(generateUnsupportedHttpVersionTestCase());
+            fail();
+        } catch (HttpParsingException e) {
+            assertEquals(e.getErroCode(), HttpStatusCode.SERVER_ERROR_505_HTTP_VERSION_NOT_SUPPORTED);
+        }
+    }
+    @Test
+    void parseHttpRequestSupportedVersion() {
+        try {
+            HttpRequest request = httpParser.parseHttpRequest(generateSupportedHttpVersion());
+            assertNotNull(request);
+            assertEquals(request.getCompatibleHttpVersion(), HttpVersion.HTTP_1_1);
+            assertEquals(request.getOriginalHttpVersion(), "HTTP/1.2");
+        } catch (HttpParsingException e) {
+            fail();
         }
     }
 
@@ -130,6 +162,36 @@ class HttpParserTest {
         String request = "\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
+                "Cache-Control: max-age=0\r\n";
+        InputStream ips = new ByteArrayInputStream(request.getBytes(
+                StandardCharsets.US_ASCII
+        ));
+        return ips;
+    }
+    private InputStream generateBadHttpVersionTestCase() {
+        String request = "GET /index.html HTP/1.1\r\n" +
+                "Host: localhost:8080\r\n" +
+                "ConnectioTTTTn: keep-alive\r\n" +
+                "Cache-Control: max-age=0\r\n";
+        InputStream ips = new ByteArrayInputStream(request.getBytes(
+                StandardCharsets.US_ASCII
+        ));
+        return ips;
+    }
+    private InputStream generateUnsupportedHttpVersionTestCase() {
+        String request = "GET /index.html HTTP/2.1\r\n" +
+                "Host: localhost:8080\r\n" +
+                "ConnectioTTTTn: keep-alive\r\n" +
+                "Cache-Control: max-age=0\r\n";
+        InputStream ips = new ByteArrayInputStream(request.getBytes(
+                StandardCharsets.US_ASCII
+        ));
+        return ips;
+    }
+    private InputStream generateSupportedHttpVersion() {
+        String request = "GET /index.html HTTP/1.2\r\n" +
+                "Host: localhost:8080\r\n" +
+                "ConnectioTTTTn: keep-alive\r\n" +
                 "Cache-Control: max-age=0\r\n";
         InputStream ips = new ByteArrayInputStream(request.getBytes(
                 StandardCharsets.US_ASCII

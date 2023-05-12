@@ -25,8 +25,8 @@ public class HttpParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        parseHeader(reader, request);
-        parseBody(reader, request);
+  /*      parseHeader(reader, request);
+        parseBody(reader, request);*/
         return request;
     }
 
@@ -84,13 +84,17 @@ public class HttpParser {
 
         request.setMethod(requestLineElements[0]);
         request.setRequestTarget(requestLineElements[1]);
-        request.setHttpVersion(requestLineElements[2]);
+        try {
+            request.setHttpVersion(requestLineElements[2]);
+        } catch (BadHttpVersionException e) {
+            throw new HttpParsingException(HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
+        }
     }
 
-    private void parseHeader(BufferedReader ips, HttpRequest request) {
+/*    private void parseHeader(BufferedReader ips, HttpRequest request) {
     }
 
     private void parseBody(BufferedReader ips, HttpRequest request) {
-    }
+    }*/
 
 }
