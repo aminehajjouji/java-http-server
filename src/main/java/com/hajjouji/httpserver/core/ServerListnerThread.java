@@ -1,7 +1,7 @@
-package com.httpserver.core;
+package com.hajjouji.httpserver.core;
 
-import com.http.HttpParser;
-import com.httpserver.HttpServer;
+import com.hajjouji.http.HttpParser;
+import com.hajjouji.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

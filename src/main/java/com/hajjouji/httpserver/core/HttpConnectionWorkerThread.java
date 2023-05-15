@@ -1,15 +1,13 @@
-package com.httpserver.core;
+package com.hajjouji.httpserver.core;
 
-import com.http.HttpParser;
-import com.http.HttpParsingException;
-import com.http.HttpRequest;
-import com.httpserver.HttpServer;
+import com.hajjouji.http.HttpParser;
+import com.hajjouji.http.HttpParsingException;
+import com.hajjouji.http.HttpRequest;
+import com.hajjouji.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 public class HttpConnectionWorkerThread extends Thread {

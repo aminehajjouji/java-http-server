@@ -1,4 +1,4 @@
-package com.http;
+package com.hajjouji.http;
 
 public enum HttpMethod {
     GET,HEAD,POST,PUT,DELETE,CONNECT,OPTIONS,TRACE,PATCH;

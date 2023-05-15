@@ -1,5 +1,7 @@
 package com.http;
 
+import com.hajjouji.http.BadHttpVersionException;
+import com.hajjouji.http.HttpVersion;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

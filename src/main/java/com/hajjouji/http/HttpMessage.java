@@ -1,6 +1,4 @@
-package com.http;
-
-import com.http.HttpVersion;
+package com.hajjouji.http;
 
 import java.util.Map;
 

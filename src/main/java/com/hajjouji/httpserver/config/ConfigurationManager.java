@@ -1,12 +1,8 @@
-package com.httpserver.config;
+package com.hajjouji.httpserver.config;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.httpserver.util.Json;
+import com.hajjouji.httpserver.util.Json;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class ConfigurationManager {
