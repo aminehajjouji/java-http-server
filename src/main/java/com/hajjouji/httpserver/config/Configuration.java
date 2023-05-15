@@ -1,4 +1,4 @@
-package com.httpserver.config;
+package com.hajjouji.httpserver.config;
 
 import lombok.Data;
 

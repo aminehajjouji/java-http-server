@@ -1,8 +1,8 @@
-package com.httpserver;
+package com.hajjouji.httpserver;
 
-import com.httpserver.config.Configuration;
-import com.httpserver.config.ConfigurationManager;
-import com.httpserver.core.ServerListnerThread;
+import com.hajjouji.httpserver.config.Configuration;
+import com.hajjouji.httpserver.config.ConfigurationManager;
+import com.hajjouji.httpserver.core.ServerListnerThread;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

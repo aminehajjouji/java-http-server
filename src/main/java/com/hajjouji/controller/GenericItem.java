@@ -1,7 +1,6 @@
-package com.controller;
+package com.hajjouji.controller;
 
-import com.http.HttpStatusCode;
-import com.http.HttpVersion;
+import com.hajjouji.http.HttpStatusCode;
 
 import java.util.Map;
 

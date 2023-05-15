@@ -1,6 +1,4 @@
-package com.http;
-
-import java.util.Map;
+package com.hajjouji.http;
 
 public class HttpRequest extends HttpMessage {
     private HttpMethod method;

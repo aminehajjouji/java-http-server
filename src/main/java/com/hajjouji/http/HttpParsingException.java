@@ -1,4 +1,4 @@
-package com.http;
+package com.hajjouji.http;
 
 public class HttpParsingException extends Exception {
     private HttpStatusCode erroCode;
