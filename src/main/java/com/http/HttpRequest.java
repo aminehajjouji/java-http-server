@@ -1,10 +1,11 @@
 package com.http;
 
+import java.util.Map;
+
 public class HttpRequest extends HttpMessage {
     private HttpMethod method;
     private String requestTarget;
     private String originalHttpVersion;// literal from the request
-    private HttpVersion compatibleHttpVersion;
 
     HttpRequest() {
     }
@@ -36,8 +37,8 @@ public class HttpRequest extends HttpMessage {
 
     public void setHttpVersion(String originalHttpVersion) throws BadHttpVersionException, HttpParsingException {
         this.originalHttpVersion = originalHttpVersion;
-        this.compatibleHttpVersion = HttpVersion.getCompatibleVersion(originalHttpVersion);
-        if (this.compatibleHttpVersion == null) {
+        setHttpVersion(HttpVersion.getCompatibleVersion(originalHttpVersion));
+        if (getHttpVersion() == null) {
             throw new HttpParsingException(HttpStatusCode.SERVER_ERROR_505_HTTP_VERSION_NOT_SUPPORTED);
         }
     }
@@ -46,8 +47,5 @@ public class HttpRequest extends HttpMessage {
         return originalHttpVersion;
     }
 
-    public HttpVersion getCompatibleHttpVersion() {
-        return compatibleHttpVersion;
-    }
 }
 

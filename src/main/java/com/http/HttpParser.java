@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpParser {
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpParser.class);
@@ -16,7 +18,7 @@ public class HttpParser {
     private static final int cr = 0x0D;
     private static final int lf = 0x0A;
 
-    public HttpRequest parseHttpRequest(InputStream ips) throws HttpParsingException {
+    public HttpRequest parseHttpRequest(InputStream ips) throws HttpParsingException, IOException {
         // InputStreamReader reader = new InputStreamReader(ips, StandardCharsets.US_ASCII);
         BufferedReader reader = new BufferedReader(new InputStreamReader(ips, StandardCharsets.US_ASCII));
         HttpRequest request = new HttpRequest();
@@ -25,8 +27,8 @@ public class HttpParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-  /*      parseHeader(reader, request);
-        parseBody(reader, request);*/
+        parseRequestHeader(reader, request);
+        parseRequestBody(reader, request);
         return request;
     }
 
@@ -67,6 +69,7 @@ public class HttpParser {
 
     /**
      * new Method using BuffredReader and split method
+     *
      * @param reader
      * @param request
      * @throws IOException
@@ -74,7 +77,7 @@ public class HttpParser {
      */
     private void parseRequestLine(BufferedReader reader, HttpRequest request) throws IOException, HttpParsingException {
         LOGGER.info("Parsing status line");
-        
+
         String requestLine = reader.readLine();
         String[] requestLineElements = requestLine.split(" ");
 
@@ -91,10 +94,30 @@ public class HttpParser {
         }
     }
 
-/*    private void parseHeader(BufferedReader ips, HttpRequest request) {
+    private static void parseRequestHeader(BufferedReader reader, HttpRequest request) throws IOException {
+        LOGGER.info("Parsing Headers block");
+
+        Map<String, String> headers = new HashMap<>();
+        String singleHeaderLine;
+        while ((singleHeaderLine = reader.readLine()) != null && !singleHeaderLine.isBlank()) {
+            String[] headerParts = singleHeaderLine.split(": ");
+            headers.put(headerParts[0], headerParts[1]);
+        }
+
+        request.setHeader(headers);
     }
 
-    private void parseBody(BufferedReader ips, HttpRequest request) {
-    }*/
+    private static void parseRequestBody(BufferedReader reader, HttpRequest request) throws IOException {
+        LOGGER.info("Parsing Body block");
+        if (request.getMethod() != HttpMethod.POST && request.getMethod() != HttpMethod.PUT) {
+            return;
+        }
+        StringBuilder requestBody = new StringBuilder();
+        String bodyLineReader;
+        while ((bodyLineReader = reader.readLine()) != null && !bodyLineReader.isBlank()) {
+            requestBody.append(bodyLineReader);
+        }
+        request.setBody(requestBody.toString());
+    }
 
 }

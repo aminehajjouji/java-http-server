@@ -25,45 +25,17 @@ public class HttpConnectionWorkerThread extends Thread {
 
     @Override
     public void run() {
-        InputStream ips = null;
-        OutputStream ops = null;
-        try {
-            ips = socket.getInputStream();
-            ops = socket.getOutputStream();
 
-            // this bloc of code print request info
-          /*  int _byte = ips.read();
-            while ((_byte = ips.read()) >= 0) {
-                System.out.print((char) _byte);
-            }*/
-           // HttpRequest httpRequest = httpParser.parseHttpRequest(ips);
-            String html = "<html><head><title>My test Page</title></head><body><h1>Hello from my htttp server!</h1></body></html>";
-            final String CRLF = "\r\n";//13,10 code ascii
-            String response = "HTTP/1.1 200 ok" + CRLF + //status line : http version response code response message
-                    "Content-Length: " + html.getBytes().length + CRLF + //header
-                    CRLF +
-                    html +
-                    CRLF + CRLF;
-            ops.write(response.getBytes());
-            LOGGER.info("CONNECTION PROCESSING FINISHED");
+        try {
+            /*ips = socket.getInputStream();
+            ops = socket.getOutputStream();*/
+            handlRequest();
         } catch (IOException e) {
             LOGGER.error("Problem with communication", e);
             e.printStackTrace();
+        } catch (HttpParsingException e) {
+            throw new RuntimeException(e);
         } finally {
-            if (ips != null) {
-                try {
-                    ips.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (ops != null) {
-                try {
-                    ops.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
             if (socket != null) {
                 try {
                     socket.close();
@@ -73,5 +45,18 @@ public class HttpConnectionWorkerThread extends Thread {
             }
         }
 
+    }
+
+    private void handlRequest() throws HttpParsingException, IOException {
+        HttpRequest httpRequest = httpParser.parseHttpRequest(socket.getInputStream());
+        String html = "<html><head><title>My test Page</title></head><body><h1>Hello from my htttp server!</h1></body></html>";
+        final String CRLF = "\r\n";//13,10 code ascii
+        String response = "HTTP/1.1 200 ok" + CRLF + //status line : http version response code response message
+                "Content-Length: " + html.getBytes().length + CRLF + //header
+                CRLF +
+                html +
+                CRLF + CRLF;
+        socket.getOutputStream().write(response.getBytes());
+        LOGGER.info("CONNECTION PROCESSING FINISHED ");
     }
 }
