@@ -1,38 +1,38 @@
 package com.hajjouji.httpserver.core;
 
-import com.hajjouji.http.HttpParser;
-import com.hajjouji.http.HttpParsingException;
-import com.hajjouji.http.HttpRequest;
+import com.hajjouji.http.*;
+import com.hajjouji.mapper.Middleware;
+import com.hajjouji.parsers.RequestParser;
 import com.hajjouji.httpserver.HttpServer;
+import com.hajjouji.parsers.ResponseParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HttpConnectionWorkerThread extends Thread {
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
+    private final Middleware middleware = new Middleware();
 
     private Socket socket;
-    private HttpParser httpParser;
+    private RequestParser requestParser;
 
-    HttpConnectionWorkerThread(Socket socket, HttpParser httpParser) {
+    HttpConnectionWorkerThread(Socket socket, RequestParser requestParser) {
         this.socket = socket;
-        this.httpParser = httpParser;
+        this.requestParser = requestParser;
     }
 
     @Override
     public void run() {
 
         try {
-            /*ips = socket.getInputStream();
-            ops = socket.getOutputStream();*/
-            handlRequest();
+            handelRequest();
         } catch (IOException e) {
             LOGGER.error("Problem with communication", e);
             e.printStackTrace();
-        } catch (HttpParsingException e) {
-            throw new RuntimeException(e);
         } finally {
             if (socket != null) {
                 try {
@@ -45,16 +45,37 @@ public class HttpConnectionWorkerThread extends Thread {
 
     }
 
-    private void handlRequest() throws HttpParsingException, IOException {
-        HttpRequest httpRequest = httpParser.parseHttpRequest(socket.getInputStream());
-        String html = "<html><head><title>My test Page</title></head><body><h1>Hello from my htttp server!</h1></body></html>";
-        final String CRLF = "\r\n";//13,10 code ascii
-        String response = "HTTP/1.1 200 ok" + CRLF + //status line : http version response code response message
-                "Content-Length: " + html.getBytes().length + CRLF + //header
-                CRLF +
-                html +
-                CRLF + CRLF;
-        socket.getOutputStream().write(response.getBytes());
-        LOGGER.info("CONNECTION PROCESSING FINISHED ");
+    private void handelRequest() throws IOException {
+        try {
+            HttpRequest request = requestParser.parseHttpRequest(socket.getInputStream());
+            ResponseEntity<?> response = middleware.findRequestedRoute(request).getHandler().handel(request);
+            sendResponseWhenSuccess(request, response);
+        } catch (HttpParsingException exception) {
+            sendResponseWhenFail(exception.getErroCode(), exception.getMessage());
+        } catch (RuntimeException e) {
+            sendResponseWhenFail(HttpStatusCode.SERVER_ERROR_500_INTERNAL_SERVER_ERROR, "Server error");
+        }
     }
+
+    private void sendResponseWhenSuccess(HttpRequest request, ResponseEntity<?> responseEntity) throws IOException {
+        HttpResponse response = new HttpResponse();
+        response.setHttpVersion(request.getHttpVersion());
+        response.setStatusCode(responseEntity.getStatusCode().STATUS_CODE);
+        response.setStatusLiteral(responseEntity.getStatusCode().MESSAGE);
+        response.setHeader(responseEntity.getHeaders());
+        response.setBody(responseEntity.stringifiedResponseBody());
+        ResponseParser.parseHttpResponse(response, socket.getOutputStream());
+    }
+
+    private void sendResponseWhenFail(HttpStatusCode status, String errMsg) throws IOException {
+        Map<String, String> headers = new HashMap<>();
+        headers.put("X-Error-Message", errMsg);
+        HttpResponse response = new HttpResponse();
+        response.setHttpVersion(HttpVersion.HTTP_1_1);
+        response.setStatusCode(status.STATUS_CODE);
+        response.setStatusLiteral(status.MESSAGE);
+        response.setHeader(headers);
+        ResponseParser.parseHttpResponse(response, socket.getOutputStream());
+    }
+
 }
