@@ -5,14 +5,14 @@ public class HttpRequest extends HttpMessage {
     private String requestTarget;
     private String originalHttpVersion;// literal from the request
 
-    HttpRequest() {
+    public HttpRequest() {
     }
 
     public HttpMethod getMethod() {
         return method;
     }
 
-    void setMethod(String method) throws HttpParsingException {
+    public void setMethod(String method) throws HttpParsingException {
         for (HttpMethod httpMethod : HttpMethod.values()) {
             if (httpMethod.name().equals(method)) {
                 this.method = httpMethod;
@@ -22,7 +22,7 @@ public class HttpRequest extends HttpMessage {
         throw new HttpParsingException(HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
     }
 
-    void setRequestTarget(String requestTarget) throws HttpParsingException {
+    public void setRequestTarget(String requestTarget) throws HttpParsingException {
         if (requestTarget == null || requestTarget.isEmpty()) {
             throw new HttpParsingException(HttpStatusCode.SERVER_ERROR_500_INTERNAL_SERVER_ERROR);
         }

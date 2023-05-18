@@ -1,6 +1,6 @@
 package com.hajjouji.httpserver.core;
 
-import com.hajjouji.http.HttpParser;
+import com.hajjouji.parsers.RequestParser;
 import com.hajjouji.httpserver.HttpServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class ServerListnerThread extends Thread {
             while(serverSocket.isBound() && !serverSocket.isClosed()){
                 Socket socket = serverSocket.accept();
                 LOGGER.info("Connection accepted from " + socket.getInetAddress());
-                HttpConnectionWorkerThread workerThread = new HttpConnectionWorkerThread(socket, new HttpParser());
+                HttpConnectionWorkerThread workerThread = new HttpConnectionWorkerThread(socket, new RequestParser());
                 workerThread.run();
             }
 

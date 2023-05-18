@@ -1,6 +1,7 @@
 package com.http;
 
 import com.hajjouji.http.*;
+import com.hajjouji.parsers.RequestParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -13,20 +14,20 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class HttpParserTest {
+class RequestParserTest {
 
-    private HttpParser httpParser;
+    private RequestParser requestParser;
 
     @BeforeAll
     public void setUp() {
-        httpParser = new HttpParser();
+        requestParser = new RequestParser();
     }
 
     @Test
     void parseHttpRequest() {
         HttpRequest request = null;
         try {
-            request = httpParser.parseHttpRequest(generateValidGetTestCase());
+            request = requestParser.parseHttpRequest(generateValidGetTestCase());
         } catch (HttpParsingException | IOException e) {
             fail(e);
         }
@@ -41,7 +42,7 @@ class HttpParserTest {
     @Test
     void parseHttpRequestBadMethod() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateBadTestCaseMethodName());
+            HttpRequest request = requestParser.parseHttpRequest(generateBadTestCaseMethodName());
             fail();
         } catch (HttpParsingException e ) {
             assertEquals(e.getErroCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
@@ -51,7 +52,7 @@ class HttpParserTest {
     @Test
     void parseHttpRequestBadMethod2() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateBadTestCaseMethodName2());
+            HttpRequest request = requestParser.parseHttpRequest(generateBadTestCaseMethodName2());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.SERVER_ERROR_501_NOT_IMPLEMENTED);
@@ -61,7 +62,7 @@ class HttpParserTest {
     @Test
     void parseHttpRequestIvalidNumberOfItems() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateBadTestCaseRequestLineIvalidNumberOfItems());
+            HttpRequest request = requestParser.parseHttpRequest(generateBadTestCaseRequestLineIvalidNumberOfItems());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
@@ -70,7 +71,7 @@ class HttpParserTest {
     @Test
     void parseHttpEmptyRequestLine() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateBadTestCaseEmptyRequestLine());
+            HttpRequest request = requestParser.parseHttpRequest(generateBadTestCaseEmptyRequestLine());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
@@ -79,7 +80,7 @@ class HttpParserTest {
     @Test
     void parseHttpBadHttpVersion() throws IOException {
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateBadHttpVersionTestCase());
+            HttpRequest request = requestParser.parseHttpRequest(generateBadHttpVersionTestCase());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.CLIENT_ERROR_400_BAD_REQUEST);
@@ -88,7 +89,7 @@ class HttpParserTest {
     @Test
     void parseHttpRequestUnsupportedVersion() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateUnsupportedHttpVersionTestCase());
+            HttpRequest request = requestParser.parseHttpRequest(generateUnsupportedHttpVersionTestCase());
             fail();
         } catch (HttpParsingException e) {
             assertEquals(e.getErroCode(), HttpStatusCode.SERVER_ERROR_505_HTTP_VERSION_NOT_SUPPORTED);
@@ -97,7 +98,7 @@ class HttpParserTest {
     @Test
     void parseHttpRequestSupportedVersion() throws IOException{
         try {
-            HttpRequest request = httpParser.parseHttpRequest(generateSupportedHttpVersion());
+            HttpRequest request = requestParser.parseHttpRequest(generateSupportedHttpVersion());
             assertNotNull(request);
             assertEquals(request.getHttpVersion(), HttpVersion.HTTP_1_1);
             assertEquals(request.getOriginalHttpVersion(), "HTTP/1.2");

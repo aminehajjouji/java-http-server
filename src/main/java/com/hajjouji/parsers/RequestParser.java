@@ -1,5 +1,6 @@
-package com.hajjouji.http;
+package com.hajjouji.parsers;
 
+import com.hajjouji.http.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +12,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpParser {
-    private final static Logger LOGGER = LoggerFactory.getLogger(HttpParser.class);
+public class RequestParser {
+    private final static Logger LOGGER = LoggerFactory.getLogger(RequestParser.class);
 
     private static final int sp = 0x20;
     private static final int cr = 0x0D;
