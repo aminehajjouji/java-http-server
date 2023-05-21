@@ -20,6 +20,14 @@ The RequestMapping annotation has two attributes:
 <br />
 ***method: Specifies the HTTP method (GET, POST, etc.) for the method.***
 * By using this annotation, you can easily map incoming requests to specific methods in the controller based on the URL and HTTP method.
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface RequestMapping {
+    String path();
+    HttpMethod method();
+}
+```
 ## Class: Mapper
 The Mapper class plays a crucial role in the server by mapping incoming requests to the appropriate controller methods based on the defined routes.
 <br />
