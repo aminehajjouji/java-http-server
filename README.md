@@ -34,6 +34,8 @@ Here's how the Mapper class works:
 This mapping mechanism allows for clean separation of concerns and enables the server to dynamically handle different routes without hardcoding them.
 ## Usage
 The main class of the project is com.hajjouji.httpserver.HttpServer. This class represents the entry point of the server application. It starts the server and listens for incoming requests.
+Package : com.hajjouji.httpserver;
+
 ```java
 public class HttpServer {
     private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
@@ -57,3 +59,8 @@ public class HttpServer {
     }
     }
 ```
+## Endpoints
+The following endpoints are available:
+* GET /products: Retrieves all products.
+* GET /products/{productId}: Retrieves a product by its ID.
+
