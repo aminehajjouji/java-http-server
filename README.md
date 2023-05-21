@@ -17,4 +17,5 @@ The RequestMapping annotation is a custom annotation used to define the mapping 
 The RequestMapping annotation has two attributes:
 
 ***path: Specifies the URL path pattern for the method.***
+<br />
 ***method: Specifies the HTTP method (GET, POST, etc.) for the method.***
