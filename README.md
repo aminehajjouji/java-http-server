@@ -32,3 +32,37 @@ Here's how the Mapper class works:
 5. If a matching route is found, the corresponding controller method is invoked to handle the request and produce a response.
 
 This mapping mechanism allows for clean separation of concerns and enables the server to dynamically handle different routes without hardcoding them.
+## Usage
+The main class of the project is com.hajjouji.httpserver.HttpServer. This class represents the entry point of the server application. It starts the server and listens for incoming requests.
+package com.hajjouji.httpserver;
+
+import com.hajjouji.httpserver.config.Configuration;
+import com.hajjouji.httpserver.config.ConfigurationManager;
+import com.hajjouji.httpserver.core.ServerListenerThread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+
+public class HttpServer {
+    private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
+    
+    public static void main(String[] args) {
+        LOGGER.info("Server Starting...");
+        
+        ConfigurationManager.getInstance().loadConfigurationFile("src/main/resources/http.json");
+        Configuration configuration = ConfigurationManager.getInstance().getCurrentConfiguration();
+        
+        LOGGER.info("Server Started at port: " + configuration.getPort());
+        LOGGER.info("Webroot is at: " + configuration.getWebroot());
+        
+        ServerListenerThread serverListenerThread = null;
+        try {
+            serverListenerThread = new ServerListenerThread(configuration.getPort(), configuration.getWebroot());
+            serverListenerThread.start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
