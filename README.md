@@ -19,3 +19,16 @@ The RequestMapping annotation has two attributes:
 ***path: Specifies the URL path pattern for the method.***
 <br />
 ***method: Specifies the HTTP method (GET, POST, etc.) for the method.***
+* By using this annotation, you can easily map incoming requests to specific methods in the controller based on the URL and HTTP method.
+## Class: Mapper
+The Mapper class plays a crucial role in the server by mapping incoming requests to the appropriate controller methods based on the defined routes.
+<br />
+Here's how the Mapper class works:
+
+1. It scans the specified controller class (in this case, ProductController) for methods annotated with RequestMapping.
+2. For each annotated method, it creates a Route object that encapsulates the URL path pattern, HTTP method, and a reference to the method.
+3. The Mapper class keeps track of all the created routes in a routes list.
+4. When a request is received, the Mapper class matches the request's URL and HTTP method against the defined routes.
+5. If a matching route is found, the corresponding controller method is invoked to handle the request and produce a response.
+
+This mapping mechanism allows for clean separation of concerns and enables the server to dynamically handle different routes without hardcoding them.
