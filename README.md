@@ -34,8 +34,8 @@ Here's how the Mapper class works:
 This mapping mechanism allows for clean separation of concerns and enables the server to dynamically handle different routes without hardcoding them.
 ## Usage
 The main class of the project is com.hajjouji.httpserver.HttpServer. This class represents the entry point of the server application. It starts the server and listens for incoming requests.
-package com.hajjouji.httpserver;
 
+`package com.hajjouji.httpserver;
 import com.hajjouji.httpserver.config.Configuration;
 import com.hajjouji.httpserver.config.ConfigurationManager;
 import com.hajjouji.httpserver.core.ServerListenerThread;
@@ -64,5 +64,5 @@ public class HttpServer {
             throw new RuntimeException(e);
         }
     }
-}
-
+    }
+`
